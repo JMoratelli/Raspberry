@@ -344,3 +344,13 @@ else
   warning "Installing the RPI4 tuned box86 build as a fallback (no crypto extensions enabled)"
   install_packages box86-rpi4arm64:armhf || exit 1
 fi
+
+#Instalar o autostart
+# Get dependencies
+install_packages yad || exit 1
+rm -rf ~/autostar || error "Failed to first remove autostar folder from $HOME!"
+echo "Downloading autostar..."
+git_clone https://github.com/Botspot/autostar || error "Failed to clone AutoStar repository!"
+
+echo "Running AutoStar setup script..."
+~/autostar/main.sh setup || error "AutoStar setup script failed!"
