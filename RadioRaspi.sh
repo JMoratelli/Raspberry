@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #atualiza a lista apt e atualiza os pacotes do raspiberry
-sudo apt update && sudo apt upgrade
+sudo apt update && sudo apt upgrade -y
 
 #Instala o PiApps
 wget -qO- https://raw.githubusercontent.com/Botspot/pi-apps/master/install | bash
