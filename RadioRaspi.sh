@@ -1,8 +1,5 @@
 #!/bin/bash
 
-#atualiza a lista apt e atualiza os pacotes do raspiberry
-sudo apt update && sudo apt upgrade -y
-
 #Instala o PiApps
 wget -qO- https://raw.githubusercontent.com/Botspot/pi-apps/master/install | bash
 
@@ -40,6 +37,9 @@ sudo raspi-config nonint do_wayland W1
 
 #Ativa o VNC
 sudo raspi-config nonint do_vnc 0
+
+#atualiza a lista apt e atualiza os pacotes do raspiberry
+sudo apt update && sudo apt upgrade -y
 
 echo "Script realizado por Jurandir Moratelli IG @jjmoratelli ;)"
 sleep 5
