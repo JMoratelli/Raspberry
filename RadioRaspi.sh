@@ -22,7 +22,7 @@ sudo raspi-config nonint do_blanking 1
 sudo raspi-config nonint do_ssh 0
 
 #Configurando Localização Raspiberry
-sudo raspi-config nonint do_change_locale pt_BR.UTF-8 UTF-8
+sudo raspi-config nonint do_change_locale pt_BR.UTF-8
 
 #Configura Horário ------------------------------- Script deverá ser inserido!
 sudo raspi-config nonint do_change_timezone America/Cuiaba
