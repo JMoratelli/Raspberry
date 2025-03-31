@@ -1,4 +1,8 @@
 #!/bin/bash
+#Altera DNS eth0
+nmcli connection modify eth0 ipv4.dns "192.168.12.1,192.168.2.1"
+nmcli connection modify eth0 ipv4.dns-search "redemachado.local"
+nmcli connection up eth0
 
 #Lê e extrai o gateway da máquina
 gateway=$(ip route show default | awk '{print $3}')
@@ -76,7 +80,7 @@ validar_numRaspi() {
     fi
   done
 
-  echo "Número do Raspberry digitado: $numRaspi"
+  echo "Sucesso!"
 }
 
 # Chama a função para validar e obter o numRaspi
@@ -114,6 +118,33 @@ sudo apt update && sudo apt upgrade -y
 #sudo nano /etc/xdg/lxsession/LXDE-pi/autostart
 #@chromium-browser --test-type --kiosk --incognito --noerrdialogs --no-context-menu --no-sandbox --disable-infobars --disable-translate --disable-pinch http://192.168.12.247/pesquisa/primavera-leste.php
 
+
+#Grava automaticamente as senhas do VNC de acordo com o gateway configurado.
+case "$filial" in
+  01)
+    senhaVNC="loja1"
+    ;;
+  03)
+    senhaVNC="loja2"
+    ;;
+  09)
+    senhaVNC="matupa"
+    ;;
+  52)
+    senhaVNC="pleste"
+    ;;
+  53)
+    senhaVNC="floresta"
+    ;;
+  57)
+    senhaVNC="confresa"
+    ;;
+  *)
+    senhaVNC="Filial não encontrada" # Caso a filial não corresponda a nenhuma das opções
+    ;;
+esac
+
+echo "Senha VNC: $senhaVNC"
 echo "Passo necessário para configuração do acesso via VNC!"
 echo "Insira a senha root para configuração do VNC e a repita novamente"
 sudo passwd root 
@@ -126,8 +157,8 @@ su
 sudo raspi-config nonint do_vnc 0
 #Define opções de senha e criptografia
 sudo printf "Encryption=PreferOff\nAuthentication=VncAuth" > /root/.vnc/config.d/vncserver-x11
-read -s -p "Digite a senha do VNC: " senhaVNC
-# Definir a senha do VNC para "pleste" e ativar login legado
+
+# Definir a senha do VNC para $senhaVNC e ativar login legado
 sudo vncpasswd -service -legacy <<< "$senhaVNC"
 echo "Senha do VNC definida e login legado ativado."
 
