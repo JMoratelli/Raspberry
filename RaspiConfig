@@ -64,7 +64,7 @@ sudo nmcli connection modify "$connectionName" ipv4.gateway "$GATEWAY"
 sudo nmcli connection modify "$connectionName" ipv4.method manual
 echo "Pode ser necessário se reconectar com o novo ip inserido"
 sleep 5
-sudo nmcli connection up eth0
+sudo nmcli connection up "$connectionName"
 sudo systemctl restart NetworkManager
 
 #Realiza update dos pacotes
