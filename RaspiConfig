@@ -116,10 +116,62 @@ sudo raspi-config nonint do_wayland W1
 #atualiza a lista apt e atualiza os pacotes do raspiberry
 sudo apt update && sudo apt upgrade -y
 
-#Reservado!
-#sudo nano /etc/xdg/lxsession/LXDE-pi/autostart
-#@chromium-browser --test-type --kiosk --incognito --noerrdialogs --no-context-menu --no-sandbox --disable-infobars --disable-translate --disable-pinch http://192.168.12.247/pesquisa/primavera-leste.php
+#Menu de escolha - tipo de ativo
+echo "Escolha uma das opções abaixo:"
+echo "1 - Ruptura"
+echo "2 - Ruptura Frios"
+echo "3 - Vinhos"
+echo "4 - Ilha Frios"
+echo "5 - Televisores Sessão"
+echo "6 - VideoWallLancho"
+echo "7 - Colabore"
+read -p "Digite o número da sua escolha: " escolha
 
+# Variável para armazenar o tipo de ativo
+tipoAtivo=""
+
+# Verifica a escolha do usuário e atribui o valor à variável
+case "$escolha" in
+  1)
+    tipoAtivo="ruptura"
+    ;;
+  2)
+    tipoAtivo="rupturaFrios"
+    ;;
+  3)
+    tipoAtivo="vinhos"
+    ;;
+  4)
+    tipoAtivo="ilhaFrios"
+    ;;
+  5)
+    tipoAtivo="TelevisoresSessao"
+    ;;
+  6)
+    tipoAtivo="videowall"
+    ;;
+  7)
+    tipoAtivo="colabore"
+    ;;
+  *)
+    echo "Opção inválida."
+    exit 1
+    ;;
+esac
+
+#Grava os dados no arquivo AutoStart
+arquivo="/etc/xdg/lxsession/LXDE-pi/autostart"
+autoStartFirefox="@firefox-esr --kiosk --noerrdialogs --disable-infobars http://192.168.12.223/\$tipoAtivo/\$filial/1/"
+verificaLinhaAutoStart=$(grep "^@firefox-esr --kiosk" "$arquivo")
+
+if [ -z "$verificaLinhaAutoStart" ]; then
+  # A linha não existe, então adiciona no final
+  echo "$autoStartFirefox" >> "$arquivo"
+else
+  # Já existe uma linha começando com "@firefox-esr --kiosk"
+  # Vamos sobrescrever a linha existente com o conteúdo completo
+  sed -i "s/^@firefox-esr --kiosk.*$/$autoStartFirefox/" "$arquivo"
+fi
 
 #Grava automaticamente as senhas do VNC de acordo com o gateway configurado.
 case "$filial" in
