@@ -1,4 +1,16 @@
 #!/bin/bash
+echo "Script deve ser executado em usuário root"
+# Verifica se o usuário não é root
+if [[ "$EUID" -ne 0 ]]; then
+  echo "Insira a senha root para configuração do VNC e a repita novamente"
+  sudo passwd root
+  # Digite a senha root para acesso ao modo root
+  echo "Digite a senha root que acabou de criar, será necessário reexecutar o script após isso."
+  su
+else
+  echo "Você já está logado como root. A senha root pode ser alterada diretamente com 'passwd root', caso deseje."
+fi
+
 #Atualiza lista de pacotes
 sudo apt update
 clear
@@ -242,15 +254,6 @@ case "$filial" in
     senhaVNC="Filial não encontrada" # Caso a filial não corresponda a nenhuma das opções
     ;;
 esac
-
-echo "Senha VNC: $senhaVNC"
-echo "Passo necessário para configuração do acesso via VNC!"
-echo "Insira a senha root para configuração do VNC e a repita novamente"
-sudo passwd root 
-
-#Digite a senha root para acesso ao modo root
-echo "Digite a senha root que acabou de criar"
-su
 
 #Ativa o VNC
 sudo raspi-config nonint do_vnc 0
