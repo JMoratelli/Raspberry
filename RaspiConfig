@@ -217,18 +217,8 @@ case "$escolha" in
 esac
 
 #Grava os dados no arquivo AutoStart
-arquivo="/etc/xdg/lxsession/LXDE-pi/autostart"
-autoStartFirefox="@firefox-esr --kiosk --noerrdialogs --disable-infobars http://192.168.12.223/\$tipoAtivo/\$filial/1/"
-verificaLinhaAutoStart=$(grep "^@firefox-esr --kiosk" "$arquivo")
-
-if [ -z "$verificaLinhaAutoStart" ]; then
-  # A linha não existe, então adiciona no final
-  echo "$autoStartFirefox" >> "$arquivo"
-else
-  # Já existe uma linha começando com "@firefox-esr --kiosk"
-  # Vamos sobrescrever a linha existente com o conteúdo completo
-  sed -i "s/^@firefox-esr --kiosk.*$/$autoStartFirefox/" "$arquivo"
-fi
+printf "%s\n%s\n%s\n%s\n%s\n%s\n%s\n" "@lxpanel --profile LXDE-pi" "@pcmanfm --desktop --profile LXDE-pi" "@xscreensaver -no-splash" "@xset s off" "@xset -dpms" "@xset s noblank" "@firefox-esr --kiosk --noerrdialogs --disable-infobars http://192.168.12.223/\$tipoAtivo/\$filial/1/" > /etc/xdg/lxsession/LXDE-pi/autostart
+sudo chmod +x /etc/xdg/lxsession/LXDE-pi/autostart
 
 #Grava automaticamente as senhas do VNC de acordo com o gateway configurado.
 case "$filial" in
