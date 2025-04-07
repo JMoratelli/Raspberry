@@ -14,9 +14,10 @@ fi
 #Atualiza lista de pacotes
 sudo apt update
 #Desinstala firefox
-sudo apt purge firefox
-#Instala firefox ESR
-sudot apt install firefox-esr
+sudo apt purge firefox -y
+#Instala firefox ESR 
+sudo apt install firefox-esr -y
+sudo apt install xdotool -y
 clear
 #Lê e extrai o nome de conexão da máquina
 connectionName=$(nmcli device show eth0 | grep "CONNECTION" | awk '{$1=""; sub(/^ +/, ""); print}')
@@ -266,7 +267,8 @@ echo "Configuração do RealVNC concluída."
 
 #Atualiza pacotes do raspi
 echo "Atualizando todos os pacotes"
-sudo apt upgrade
+sleep 3
+sudo apt upgrade -y
 clear
 
 echo "Script realizado por Jurandir Moratelli IG @jjmoratelli ;). Aguarde reinicio."
