@@ -1,5 +1,4 @@
 #!/bin/bash
-
 #Lê e extrai o gateway da máquina
 gateway=$(ip route show default | awk '{print $3}')
 
@@ -61,9 +60,13 @@ sudo nmcli connection modify eth0 ipv4.dns-search "redemachado.local"
 sudo nmcli connection modify eth0 ipv4.addresses "$IP_ADDRESS/$NETMASK_CIDR" 
 sudo nmcli connection modify ipv4.gateway "$GATEWAY" 
 sudo nmcli connection modify ipv4.method manual
+echo "Pode ser necessário se reconectar com o novo ip inserido"
+sleep 5
 sudo nmcli connection up eth0
 sudo systemctl restart NetworkManager
 
+#Realiza update dos pacotes
+sudo apt update
 
 echo "Ajustando fuso horário..."
 # Ajusta Fuso horário
@@ -240,6 +243,8 @@ sudo systemctl enable vncserver-x11-serviced
 echo "RealVNC configurado para iniciar automaticamente."
 
 echo "Configuração do RealVNC concluída."
+
+sudo apt upgrade
 
 echo "Script realizado por Jurandir Moratelli IG @jjmoratelli ;)"
 sleep 5
