@@ -1,8 +1,6 @@
 #!/bin/bash
-#Ajustes de Rede
-echo "Ajustes de Rede devem ser realizados manualmente!"
-sleep 5
-#Fim Configuração de rede
+#Lê e extrai o nome de conexão da máquina
+connectionName=$(nmcli device show eth0 | grep "CONNECTION" | awk '{$1=""; sub(/^ +/, ""); print}')
 #Lê e extrai o gateway da máquina
 gateway=$(ip route show default | awk '{print $3}')
 
@@ -12,36 +10,86 @@ case $gateway in
         echo "Detectada Loja Centro"
         filial=01
         loja=01
+        NETMASK_CIDR=24
+        GATEWAY=10.1.1.1
         ;;
     192.168.11.253)
         echo "Detectada Loja Bairro"
         filial=03
         loja=02
+        NETMASK_CIDR=24
+        GATEWAY=192.168.11.253
         ;;
     192.168.5.253)
         echo "Detectada Matupá"
         filial=09
         loja=03
+        NETMASK_CIDR=23
+        GATEWAY=192.168.5.253
         ;;
      192.168.7.253)
         echo "Detectada Alta Floresta"  
         filial=53
         loja=05
+        NETMASK_CIDR=23
+        GATEWAY=192.168.7.253
         ;;
      192.168.9.253)
         echo "Detectada Primavera do Leste"
         filial=52
         loja=06
+        NETMASK_CIDR=23
+        GATEWAY=192.168.9.253
         ;;
      192.168.57.193|192.168.57.1|192.168.156.1|192.168.57.129|10.253.7.129)
         echo "Detectada impressora de Confresa"
         filial=57
         loja=07
+        NETMASK_CIDR=25
+        GATEWAY=10.253.7.129
         ;;
     *)
         echo "Valor de gateway não mapeado: $gateway"
         ;;
 esac
+
+# Ajustes de Rede
+# Certifique-se de que NetworkManager esteja rodando
+if ! systemctl is-active --quiet NetworkManager; then
+  echo "O NetworkManager não está ativo. Iniciando..."
+  sudo systemctl start NetworkManager
+  if [ $? -ne 0 ]; then
+    echo "Erro ao iniciar o NetworkManager. Saindo."
+    exit 1
+  fi
+fi
+
+# Obtém o método de configuração IPv4 atual da conexão
+current_method=$(nmcli connection show "$connectionName" | grep "ipv4.method" | awk '{print $2}')
+
+# Verifica se o método já está como "manual"
+if [ "$current_method" == "manual" ]; then
+  echo "A configuração de IP já está como estática (manual). Nenhuma alteração seŕa realizada."
+else
+  echo "Digite o endereço IP para o terminal:"
+  read -p "Endereço IP (ex: 192.168.1.100): " IP_ADDRESS
+  sudo nmcli connection modify "$connectionName" ipv4.dns "192.168.12.1 192.168.2.1"
+  sudo nmcli connection modify "$connectionName" ipv4.dns-search "redemachado.local"
+  sudo nmcli connection modify "$connectionName" ipv4.addresses "$IP_ADDRESS/$NETMASK_CIDR"
+  sudo nmcli connection modify "$connectionName" ipv4.gateway "$GATEWAY"
+  sudo nmcli connection modify "$connectionName" ipv4.method manual
+  echo "Pode ser necessário se reconectar com o novo ip inserido"
+  sleep 5
+  sudo nmcli connection up "$connectionName"
+  echo "Reiniciando o NetworkManager..."
+  sudo systemctl restart NetworkManager
+  if [ $? -ne 0 ]; then
+    echo "Erro ao reiniciar o NetworkManager."
+  fi
+
+  echo "Configuração de rede concluída."
+fi
+#Fim Configuração de rede
 
 #Realiza update dos pacotes
 sudo apt update
@@ -62,7 +110,7 @@ case $filial in
 esac
 
 #Instala o PiApps
-echo "Instalando PiApps"
+echo "Instalando PiApps (ou não)"
 #wget -qO- https://raw.githubusercontent.com/Botspot/pi-apps/master/install | bash
 
 #Atualiza configuração de audio
