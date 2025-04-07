@@ -13,6 +13,10 @@ fi
 
 #Atualiza lista de pacotes
 sudo apt update
+#Desinstala firefox
+sudo apt purge firefox
+#Instala firefox ESR
+sudot apt install firefox-esr
 clear
 #Lê e extrai o nome de conexão da máquina
 connectionName=$(nmcli device show eth0 | grep "CONNECTION" | awk '{$1=""; sub(/^ +/, ""); print}')
@@ -217,7 +221,7 @@ case "$escolha" in
 esac
 
 #Grava os dados no arquivo AutoStart
-printf "%s\n%s\n%s\n%s\n%s\n%s\n%s\n" "@lxpanel --profile LXDE-pi" "@pcmanfm --desktop --profile LXDE-pi" "@xscreensaver -no-splash" "@xset s off" "@xset -dpms" "@xset s noblank" "@firefox-esr --kiosk --noerrdialogs --disable-infobars http://192.168.12.223/\$tipoAtivo/\$filial/1/" > /etc/xdg/lxsession/LXDE-pi/autostart
+printf "%s\n%s\n%s\n%s\n%s\n%s\n%s\n" "@lxpanel --profile LXDE-pi" "@pcmanfm --desktop --profile LXDE-pi" "@xscreensaver -no-splash" "@xset s off" "@xset -dpms" "@xset s noblank" "@firefox-esr --kiosk --noerrdialogs --disable-infobars http://192.168.12.223/$tipoAtivo/$filial/1/" > /etc/xdg/lxsession/LXDE-pi/autostart
 sudo chmod +x /etc/xdg/lxsession/LXDE-pi/autostart
 
 #Grava automaticamente as senhas do VNC de acordo com o gateway configurado.
