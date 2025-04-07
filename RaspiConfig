@@ -269,6 +269,7 @@ echo "Configuração do RealVNC concluída."
 echo "Atualizando todos os pacotes"
 sleep 3
 sudo apt full-upgrade -y
+sudo apt auto-remove -y
 clear
 
 echo "Script realizado por Jurandir Moratelli IG @jjmoratelli ;). Aguarde reinicio."
