@@ -268,7 +268,7 @@ echo "Configuração do RealVNC concluída."
 #Atualiza pacotes do raspi
 echo "Atualizando todos os pacotes"
 sleep 3
-sudo apt upgrade -y
+sudo apt full-upgrade -y
 clear
 
 echo "Script realizado por Jurandir Moratelli IG @jjmoratelli ;). Aguarde reinicio."
