@@ -54,7 +54,7 @@ case $gateway in
 esac
 
 #Altera DNS eth0
-sudo systemctl start NetworkManager
+#sudo systemctl start NetworkManager
 echo "Digite o endereço IP do terminal:"
 read -p "Endereço IP (ex: 192.168.1.100): " IP_ADDRESS
 sudo nmcli connection modify "$connectionName" ipv4.dns "192.168.12.1,192.168.2.1"
