@@ -153,8 +153,8 @@ validar_numRaspi() {
 validar_numRaspi
 
 #Grava nome do host raspberry
-sudo raspi-config nonint do_hostname RPI${filial}${numRaspi}LJ${loja}
-echo "Nome de Host configurado para RPI${filial}${numRaspi}LJ${loja}"
+sudo raspi-config nonint do_hostname RPI${filial}${numRaspi}-LJ${loja}
+echo "Nome de Host configurado para RPI${filial}${numRaspi}-LJ${loja}"
 
 #Configura rede (acelera boot)
 sudo raspi-config nonint do_boot_wait 0
