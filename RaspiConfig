@@ -161,9 +161,6 @@ sudo raspi-config nonint do_configure_keyboard br
 #Configura para desativar o Waylan e utilizar interface X11
 sudo raspi-config nonint do_wayland W1
 
-#atualiza a lista apt e atualiza os pacotes do raspiberry
-sudo apt upgrade -y
-
 #Menu de escolha - tipo de ativo
 echo "Escolha uma das opções abaixo:"
 echo "1 - Ruptura"
@@ -270,8 +267,11 @@ echo "RealVNC configurado para iniciar automaticamente."
 
 echo "Configuração do RealVNC concluída."
 
+#Atualiza pacotes do raspi
+echo "Atualizando todos os pacotes"
 sudo apt upgrade
+clear
 
-echo "Script realizado por Jurandir Moratelli IG @jjmoratelli ;)"
-sleep 5
+echo "Script realizado por Jurandir Moratelli IG @jjmoratelli ;). Aguarde reinicio."
+sleep 10
 sudo reboot
