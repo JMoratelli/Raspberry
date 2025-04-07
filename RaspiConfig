@@ -1,4 +1,7 @@
 #!/bin/bash
+#Atualiza lista de pacotes
+sudo apt update
+clear
 #Lê e extrai o nome de conexão da máquina
 connectionName=$(nmcli device show eth0 | grep "CONNECTION" | awk '{$1=""; sub(/^ +/, ""); print}')
 #Lê e extrai o gateway da máquina
@@ -91,9 +94,6 @@ else
 fi
 #Fim Configuração de rede
 
-#Realiza update dos pacotes
-sudo apt update
-
 echo "Ajustando fuso horário..."
 # Ajusta Fuso horário
 case $filial in
@@ -162,7 +162,7 @@ sudo raspi-config nonint do_configure_keyboard br
 sudo raspi-config nonint do_wayland W1
 
 #atualiza a lista apt e atualiza os pacotes do raspiberry
-sudo apt update && sudo apt upgrade -y
+sudo apt upgrade -y
 
 #Menu de escolha - tipo de ativo
 echo "Escolha uma das opções abaixo:"
