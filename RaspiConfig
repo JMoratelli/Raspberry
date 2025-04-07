@@ -53,19 +53,78 @@ case $gateway in
         ;;
 esac
 
-#Altera DNS eth0
-#sudo systemctl start NetworkManager
-echo "Digite o endereço IP do terminal:"
+#Ajustes de Rede
+# Certifique-se de que NetworkManager esteja rodando
+if ! systemctl is-active --quiet NetworkManager; then
+  echo "O NetworkManager não está ativo. Iniciando..."
+  sudo systemctl start NetworkManager
+  if [ $? -ne 0 ]; then
+    echo "Erro ao iniciar o NetworkManager. Saindo."
+    exit 1
+  fi
+fi
+
+echo "Digite o endereço IP para o terminal:"
 read -p "Endereço IP (ex: 192.168.1.100): " IP_ADDRESS
+
+# Verifique se a variável connectionName está definida.
+# Assumindo que você já a definiu em um trecho anterior do seu script.
+if [ -z "$connectionName" ]; then
+  echo "Erro: A variável connectionName não está definida."
+  echo "Certifique-se de que você obteve o nome da conexão para eth0 antes."
+  exit 1
+fi
+
+# Defina valores padrão para NETMASK_CIDR e GATEWAY caso não estejam definidos
+if [ -z "$NETMASK_CIDR" ]; then
+  read -p "Máscara de rede (CIDR, ex: /24): " NETMASK_CIDR
+fi
+
+if [ -z "$GATEWAY" ]; then
+  read -p "Gateway (ex: 192.168.1.1): " GATEWAY
+fi
+
 sudo nmcli connection modify "$connectionName" ipv4.dns "192.168.12.1 192.168.2.1"
+if [ $? -ne 0 ]; then
+  echo "Erro ao modificar os servidores DNS."
+fi
+
 sudo nmcli connection modify "$connectionName" ipv4.dns-search "redemachado.local"
-sudo nmcli connection modify "$connectionName" ipv4.addresses "$IP_ADDRESS/$NETMASK_CIDR" 
-sudo nmcli connection modify "$connectionName" ipv4.gateway "$GATEWAY" 
+if [ $? -ne 0 ]; then
+  echo "Erro ao modificar o domínio de busca DNS."
+fi
+
+sudo nmcli connection modify "$connectionName" ipv4.addresses "$IP_ADDRESS/$NETMASK_CIDR"
+if [ $? -ne 0 ]; then
+  echo "Erro ao modificar o endereço IP."
+fi
+
+sudo nmcli connection modify "$connectionName" ipv4.gateway "$GATEWAY"
+if [ $? -ne 0 ]; then
+  echo "Erro ao modificar o gateway."
+fi
+
 sudo nmcli connection modify "$connectionName" ipv4.method manual
+if [ $? -ne 0 ]; then
+  echo "Erro ao modificar o método para manual."
+fi
+
 echo "Pode ser necessário se reconectar com o novo ip inserido"
 sleep 5
 sudo nmcli connection up "$connectionName"
+if [ $? -ne 0 ]; then
+  echo "Erro ao ativar a conexão com as novas configurações."
+fi
+
+echo "Reiniciando o NetworkManager..."
 sudo systemctl restart NetworkManager
+if [ $? -ne 0 ]; then
+  echo "Erro ao reiniciar o NetworkManager."
+fi
+
+echo "Configuração de rede concluída."
+
+#Fim Configuração de rede
 
 #Realiza update dos pacotes
 sudo apt update
