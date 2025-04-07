@@ -1,10 +1,4 @@
 #!/bin/bash
-#Altera DNS eth0
-sudo systemctl start NetworkManager
-sudo nmcli connection modify eth0 ipv4.dns "192.168.12.1,192.168.2.1"
-sudo nmcli connection modify eth0 ipv4.dns-search "redemachado.local"
-sudo nmcli connection up eth0
-sudo systemctl restart NetworkManager
 
 #Lê e extrai o gateway da máquina
 gateway=$(ip route show default | awk '{print $3}')
@@ -15,36 +9,61 @@ case $gateway in
         echo "Detectada Loja Centro"
         filial=01
         loja=01
+        NETMASK_CIDR=24
+        GATEWAY=10.1.1.1
         ;;
     192.168.11.253)
         echo "Detectada Loja Bairro"
         filial=03
         loja=02
+        NETMASK_CIDR=24
+        GATEWAY=192.168.11.253
         ;;
     192.168.5.253)
         echo "Detectada Matupá"
         filial=09
         loja=03
+        NETMASK_CIDR=23
+        GATEWAY=192.168.5.253
         ;;
      192.168.7.253)
         echo "Detectada Alta Floresta"  
         filial=53
         loja=05
+        NETMASK_CIDR=23
+        GATEWAY=192.168.7.253
         ;;
      192.168.9.253)
         echo "Detectada Primavera do Leste"
         filial=52
         loja=06
+        NETMASK_CIDR=24
+        GATEWAY=192.168.9.253
         ;;
-      192.168.57.193)
+     192.168.57.193|192.168.57.1|192.168.156.1|192.168.57.129|10.253.7.129)
         echo "Detectada impressora de Confresa"
         filial=57
         loja=07
+        NETMASK_CIDR=25
+        GATEWAY=10.253.7.129
         ;;
     *)
         echo "Valor de gateway não mapeado: $gateway"
         ;;
 esac
+
+#Altera DNS eth0
+sudo systemctl start NetworkManager
+echo "Digite o endereço IP do terminal:"
+read -p "Endereço IP (ex: 192.168.1.100): " IP_ADDRESS
+sudo nmcli connection modify eth0 ipv4.dns "192.168.12.1,192.168.2.1"
+sudo nmcli connection modify eth0 ipv4.dns-search "redemachado.local"
+sudo nmcli connection modify eth0 ipv4.addresses "$IP_ADDRESS/$NETMASK_CIDR" 
+sudo nmcli connection modify ipv4.gateway "$GATEWAY" 
+sudo nmcli connection modify ipv4.method manual
+sudo nmcli connection up eth0
+sudo systemctl restart NetworkManager
+
 
 echo "Ajustando fuso horário..."
 # Ajusta Fuso horário
