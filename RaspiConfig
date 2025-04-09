@@ -39,7 +39,9 @@ sudo apt install firefox-esr -y
 sudo apt install xdotool -y
 #Grava Script de atualização de tela
 printf '#!/bin/bash\n\nrandom_wait_seconds=$(( RANDOM %% 841 ))\n\nsleep "$random_wait_seconds"\n\nDISPLAY=:0 xdotool key ctrl+shift+r\n\nexit 0\n' > /home/user/Downloads/atualizaTelaRandom.sh
-$GravaCrontab
+#Permite atualizaTelaRandom.sh a ser executado.
+chmod +x /home/user/Downloads/atualizaTelaRandom.sh
+#GravaCrontab
 sudo crontab -u user -l | echo "*/15 * * * * /home/user/Downloads/atualizaTelaRandom.sh &" | sudo crontab -u user -
 clear
 #Lê e extrai o nome de conexão da máquina
