@@ -37,6 +37,10 @@ sudo apt purge firefox -y
 #Instala firefox ESR 
 sudo apt install firefox-esr -y
 sudo apt install xdotool -y
+#Grava Script de atualização de tela
+printf '#!/bin/bash\n\nrandom_wait_seconds=$(( RANDOM %% 841 ))\n\nsleep "$random_wait_seconds"\n\nDISPLAY=:0 xdotool key ctrl+shift+r\n\nexit 0\n' > /home/user/Downloads/atualizaTelaRandom.sh
+$GravaCrontab
+sudo crontab -u user -l | echo "*/15 * * * * /home/user/Downloads/atualizaTelaRandom.sh &" | sudo crontab -u user -
 clear
 #Lê e extrai o nome de conexão da máquina
 connectionName=$(nmcli device show eth0 | grep "CONNECTION" | awk '{$1=""; sub(/^ +/, ""); print}')
@@ -117,14 +121,8 @@ else
   sudo nmcli connection modify "$connectionName" ipv4.addresses "$IP_ADDRESS/$NETMASK_CIDR"
   sudo nmcli connection modify "$connectionName" ipv4.gateway "$GATEWAY"
   sudo nmcli connection modify "$connectionName" ipv4.method manual
-  echo "Pode ser necessário se reconectar com o novo ip inserido"
+  echo "Configurações serão aplicadas ao reinício de sistema"
   sleep 5
-  sudo nmcli connection up "$connectionName"
-  echo "Reiniciando o NetworkManager..."
-  sudo systemctl restart NetworkManager
-  if [ $? -ne 0 ]; then
-    echo "Erro ao reiniciar o NetworkManager."
-  fi
 
   echo "Configuração de rede concluída."
 fi
@@ -153,9 +151,12 @@ echo "Instalando PiApps (ou não)"
 echo "Configurando audio"
 sudo raspi-config nonint do_audio 0
 
+clear
 #Seleciona nome de host (utilize padrão do machado)
 validar_numRaspi() {
   while true; do
+    echo "Esse é o número host RPI52xxx-LJ06, aonde deve digitar apenas os 3 digitos de "xxx""
+    echo "O restante será preenchido automaticamente"
     read -p "Digite o número do Raspberry (3 dígitos numéricos): " numRaspi
 
     # Verifica se a entrada tem 3 dígitos e se é numérica
@@ -287,7 +288,7 @@ echo "Configuração do RealVNC concluída."
 #Atualiza pacotes do raspi
 echo "Atualizando todos os pacotes"
 sleep 3
-sudo apt full-upgrade -y
+sudo apt upgrade -y
 sudo apt auto-remove -y
 clear
 
