@@ -242,6 +242,8 @@ case "$escolha" in
     exit 1
     ;;
 esac
+#Remove os "zeros" à esquerda, necessário para não atrapalhar o script
+filial="${filial##"0"}"
 
 #Grava os dados no arquivo AutoStart
 printf "%s\n%s\n%s\n%s\n%s\n%s\n%s\n" "@lxpanel --profile LXDE-pi" "@pcmanfm --desktop --profile LXDE-pi" "@xscreensaver -no-splash" "@xset s off" "@xset -dpms" "@xset s noblank" "@firefox-esr --kiosk --noerrdialogs --disable-infobars http://192.168.12.223/$tipoAtivo/$filial/1/" > /etc/xdg/lxsession/LXDE-pi/autostart
@@ -249,13 +251,13 @@ sudo chmod +x /etc/xdg/lxsession/LXDE-pi/autostart
 
 #Grava automaticamente as senhas do VNC de acordo com o gateway configurado.
 case "$filial" in
-  01)
+  1)
     senhaVNC="loja1"
     ;;
-  03)
+  3)
     senhaVNC="loja2"
     ;;
-  09)
+  9)
     senhaVNC="matupa"
     ;;
   52)
