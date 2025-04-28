@@ -209,6 +209,7 @@ echo "4 - Ilha Frios"
 echo "5 - Televisores Sessão"
 echo "6 - VideoWallLancho"
 echo "7 - Colabore"
+echo "8 - TVs RH - Painel Avisos RH"
 read -p "Digite o número da sua escolha: " escolha
 
 # Variável para armazenar o tipo de ativo
@@ -236,6 +237,9 @@ case "$escolha" in
     ;;
   7)
     tipoAtivo="colabore"
+    ;;
+  8)
+    tipoAtivo="painelTVsRH"
     ;;
   *)
     echo "Opção inválida."
