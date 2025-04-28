@@ -87,7 +87,7 @@ case $gateway in
         GATEWAY=192.168.9.253
         ;;
      192.168.57.193|192.168.57.1|192.168.156.1|192.168.57.129|10.253.7.129)
-        echo "Detectada impressora de Confresa"
+        echo "Detectada Confresa"
         filial=57
         loja=07
         NETMASK_CIDR=25
