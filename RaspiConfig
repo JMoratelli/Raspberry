@@ -302,4 +302,5 @@ clear
 
 echo "Script realizado por Jurandir Moratelli IG @jjmoratelli ;). Aguarde reinicio."
 sleep 10
+rm -- "$0"
 sudo reboot
