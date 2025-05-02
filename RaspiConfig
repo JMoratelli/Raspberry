@@ -210,6 +210,7 @@ echo "5 - Televisores Sessão"
 echo "6 - VideoWallLancho"
 echo "7 - Colabore"
 echo "8 - TVs RH - Painel Avisos RH"
+echo "9 - TV Central - Painel do FAsterisk"
 read -p "Digite o número da sua escolha: " escolha
 
 # Variável para armazenar o tipo de ativo
@@ -219,27 +220,38 @@ tipoAtivo=""
 case "$escolha" in
   1)
     tipoAtivo="ruptura"
+    link="http://192.168.12.223/$tipoAtivo/$filial/1/"
     ;;
   2)
     tipoAtivo="rupturaFrios"
+    link="http://192.168.12.223/$tipoAtivo/$filial/1/"
     ;;
   3)
     tipoAtivo="vinhos"
+    link="http://192.168.12.223/$tipoAtivo/$filial/1/"
     ;;
   4)
     tipoAtivo="ilhaFrios"
+    link="http://192.168.12.223/$tipoAtivo/$filial/1/"
     ;;
   5)
     tipoAtivo="TelevisoresSessao"
+    link="http://192.168.12.223/$tipoAtivo/$filial/1/"
     ;;
   6)
     tipoAtivo="videowall"
+    link="http://192.168.12.223/$tipoAtivo/$filial/1/"
     ;;
   7)
     tipoAtivo="colabore"
+    link="http://192.168.12.223/$tipoAtivo/$filial/1/"
     ;;
   8)
     tipoAtivo="painelTVsRH"
+    link="http://192.168.12.223/$tipoAtivo/$filial/1/"
+    ;;
+  9)
+    link="http://192.168.12.223/$tipoAtivo/$filial/1/"
     ;;
   *)
     echo "Opção inválida."
@@ -250,7 +262,7 @@ esac
 filial="${filial##"0"}"
 
 #Grava os dados no arquivo AutoStart
-printf "%s\n%s\n%s\n%s\n%s\n%s\n%s\n" "@lxpanel --profile LXDE-pi" "@pcmanfm --desktop --profile LXDE-pi" "@xscreensaver -no-splash" "@xset s off" "@xset -dpms" "@xset s noblank" "@firefox-esr --kiosk --noerrdialogs --disable-infobars http://192.168.12.223/$tipoAtivo/$filial/1/" > /etc/xdg/lxsession/LXDE-pi/autostart
+printf "%s\n%s\n%s\n%s\n%s\n%s\n%s\n" "@lxpanel --profile LXDE-pi" "@pcmanfm --desktop --profile LXDE-pi" "@xscreensaver -no-splash" "@xset s off" "@xset -dpms" "@xset s noblank" "@firefox-esr --kiosk --noerrdialogs --disable-infobars $link" > /etc/xdg/lxsession/LXDE-pi/autostart
 sudo chmod +x /etc/xdg/lxsession/LXDE-pi/autostart
 
 #Grava automaticamente as senhas do VNC de acordo com o gateway configurado.
